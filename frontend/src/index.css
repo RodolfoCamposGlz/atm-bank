@@ -1,5 +1,5 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900');
-
+@import url("https://fonts.googleapis.com/css?family=Poppins:400,500,600,700,800,900");
+@import "tailwindcss";
 * {
   margin: 0;
   padding: 0;
@@ -7,8 +7,12 @@
 }
 
 body {
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
   height: 100vh;
   width: 100vw;
   background: #fafafa;
+}
+
+#root {
+  height: 100%;
 }
