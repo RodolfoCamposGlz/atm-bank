@@ -1,5 +1,9 @@
 import React from "react";
-
+import DisplayInterface from "../components/DisplayInterface";
 export default function ATM() {
-  return <div>ATM</div>;
+  return (
+    <div>
+      <DisplayInterface />
+    </div>
+  );
 }

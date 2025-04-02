@@ -149,8 +149,8 @@
 }
 
 .anime_link a {
-    font-weight: 600;
-    font-size: 14px;
+  font-weight: 600;
+  font-size: 14px;
 }
 
 .anime_card:hover {
@@ -192,10 +192,6 @@
   font-weight: 800;
   box-shadow: 5px 5px 0px 0px #000;
   color: #000;
-}
-
-p {
-  margin: 20px 0px;
 }
 
 .link {
