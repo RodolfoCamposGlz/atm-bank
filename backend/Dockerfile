@@ -25,4 +25,4 @@ COPY . .
 
 EXPOSE 8000 
 
-CMD npm start
+CMD npm run seed && npm start

@@ -1,8 +1,9 @@
 const BankAccount = require("../BankAccount/account.model");
 
-async function getBankAccountWithPinVerification(id, pin) {
+async function getBankAccountWithPinVerification(id, pin, transaction) {
   const account = await BankAccount.findOne({
     where: { id: id },
+    ...transaction,
   });
 
   if (!account) {
@@ -14,15 +15,7 @@ async function getBankAccountWithPinVerification(id, pin) {
     throw new Error("Invalid PIN");
   }
 
-  // Return safe account data after verification
-  return {
-    id: account.id,
-    firstName: account.firstName,
-    lastName: account.lastName,
-    balance: account.balance,
-    accountStatus: account.accountStatus,
-    createdAt: account.createdAt,
-  };
+  return account;
 }
 
 module.exports = {

@@ -18,7 +18,8 @@ app.use(
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.post("/api/v1/accounts", accountController.getAccountByPin);
-
+app.post("/api/v1/withdraw", accountController.withdrawMoney);
+app.post("/api/v1/deposit", accountController.depositMoney);
 app.listen(8000, () => {
   console.log("server listening on port 8000");
 });
