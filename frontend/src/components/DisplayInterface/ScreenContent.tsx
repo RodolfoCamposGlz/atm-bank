@@ -37,22 +37,22 @@ export const ScreenContent: React.FC<ScreenContentProps> = ({
   switch (currentScreen) {
     case "initial":
       return (
-        <div className="flex flex-col items-center mt-[10px]">
+        <div className="flex flex-col items-center mt-[10px] text-lg">
           <p>Hi {userName}!</p>
           <p>Welcome to the ATM</p>
         </div>
       );
     case "options":
       return (
-        <div className="flex flex-col items-center mt-[10px]">
+        <div className="flex flex-col items-center mt-[10px] text-lg">
           <p>Hi {userName}!</p>
           <p>Please make a choice</p>
         </div>
       );
     case "withdraw":
       return (
-        <div className="flex flex-col items-center justify-center h-full">
-          <p className="mb-4">Enter amount to withdraw</p>
+        <div className="flex flex-col items-center justify-center h-full text-lg">
+          <p className="mb-4 ">Enter amount to withdraw</p>
           <NumericFormat
             value={withdrawAmount}
             className="w-32 p-2 text-center text-white rounded border border-gray-300"
@@ -85,7 +85,7 @@ export const ScreenContent: React.FC<ScreenContentProps> = ({
       );
     case "balance":
       return (
-        <div className="flex flex-col items-center justify-center h-full">
+        <div className="flex flex-col items-center justify-center h-full text-lg">
           <p className="mb-4">Your balance is</p>
           <NumericFormat
             value={balance}
@@ -100,14 +100,14 @@ export const ScreenContent: React.FC<ScreenContentProps> = ({
       );
     case "pin":
       return (
-        <div className="flex flex-col items-center justify-center h-full">
+        <div className="flex flex-col items-center justify-center h-full text-lg">
           <p className="mb-4">Enter your 4-digit PIN</p>
           <div>
             <input
               type="password"
               value={pin}
               onChange={onPinChange}
-              className="w-auto h-[20px] p-2 text-center text-black rounded tracking-widest border border-gray-300"
+              className="w-auto h-[32px] p-2 text-center text-black rounded tracking-widest border border-gray-300"
               maxLength={4}
               inputMode="numeric"
               autoFocus

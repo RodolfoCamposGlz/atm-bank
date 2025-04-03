@@ -47,16 +47,16 @@ const MenuOptionItem: React.FC<{
           }`}
         >
           {side === "left" && (
-            <div className="h-[2px] w-[10px] bg-white mr-1"></div>
+            <div className="h-[2px] w-[14px] bg-white mr-1"></div>
           )}
           <button
             onClick={() => option.action && onButtonClick(option.action)}
-            className="hover:underline cursor-pointer focus:outline-none text-[8px]"
+            className="hover:underline cursor-pointer focus:outline-none text-[14px]"
           >
             {option.content}
           </button>
           {side === "right" && (
-            <div className="h-[2px] w-[10px] bg-white ml-1"></div>
+            <div className="h-[2px] w-[14px] bg-white ml-1"></div>
           )}
         </div>
       )}

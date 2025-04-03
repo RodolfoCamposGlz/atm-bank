@@ -150,7 +150,7 @@ const DisplayScreen: React.FC = () => {
     actions: (string | null)[];
   }): JSX.Element => {
     return (
-      <div className="flex h-[92px] flex-col h-full justify-end mt-auto gap-y-2 mb-[9px]">
+      <div className="flex flex-col h-full justify-end mt-auto gap-y-3 mb-[12px]">
         {actions.map((action) => (
           <Button
             side={side}
@@ -180,7 +180,7 @@ const DisplayScreen: React.FC = () => {
             leftButtonActions[currentScreen] || leftButtonActions.initial
           }
         />
-        <div className="bg-blue-400 text-white text-sm h-[200px] w-[200px] border-6 border-gray-200 ">
+        <div className="bg-blue-400 text-white text-sm h-[300px] w-[300px] border-6 border-gray-200 ">
           <div className="flex flex-col justify-between h-full">
             <div className="h-[50%]">
               <ScreenContent
