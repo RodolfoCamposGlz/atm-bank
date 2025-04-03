@@ -33,7 +33,7 @@ services:
           action: rebuild
         # it'll watch for changes in the frontend directory and sync the changes with the container real time
         - path: ./frontend
-          target: /
+          target: /app
           action: sync
 
   # define the api service/container
@@ -42,14 +42,13 @@ services:
     ports:
       - 8000:8000
     environment:
-      DB_URL: sqlite:///data/sqlite.db # Update the path if needed
+      DB_URL: "sqlite:///backend/sqlite.db"
     volumes:
-      - sqlite_data:/data # Mounts a persistent volume inside the container
+      - ./backend/data:/app/data # Mounts a persistent volume inside the container
     develop:
       watch:
         - path: ./backend
-          target: /
+          target: /app
           action: sync
-
 volumes:
   sqlite_data:
