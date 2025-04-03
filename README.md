@@ -235,6 +235,21 @@ All endpoints may return the following error responses:
   }
   ```
 
+## Test Accounts
+
+The following test accounts are available in the seeded database:
+
+| Account ID | PIN  | First Name | Last Name | Balance    | Card Type  |
+| ---------- | ---- | ---------- | --------- | ---------- | ---------- |
+| 1          | 1234 | Harry      | Potter    | $1,150.00  | Visa       |
+| 2          | 4321 | Mr         | Robot     | $231.11    | Mastercard |
+| 3          | 0000 | John       | Snow      | $451.30    | Maestro    |
+| 4          | 1111 | Ash        | Ketchum   | $1.30      | Plus       |
+| 5          | 9999 | Tony       | Stark     | $1,000,000 | Pulse      |
+| 6          | 8888 | Bruce      | Wayne     | $5,000,000 | Star       |
+
+These accounts are automatically created when running `npm run seed` in the backend directory or when starting the application with Docker Compose.
+
 ## TODO
 
 ### Testing Improvements
