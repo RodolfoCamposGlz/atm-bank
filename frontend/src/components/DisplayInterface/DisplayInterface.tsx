@@ -1,7 +1,9 @@
 import React, { useState } from "react";
-import Button from "./Button";
+import Button from "../Button";
 import { NumericFormat } from "react-number-format";
-import useBankAccount from "../hooks/useBankData";
+import useBankAccount from "../../hooks/useBankData";
+import HighlightedImage from "../HighLightImage";
+import { cardImages } from "./ImagesPosition";
 // Define screen types to avoid string literals
 type ScreenType =
   | "initial"
@@ -11,6 +13,20 @@ type ScreenType =
   | "balance"
   | "pin"
   | "goodbye";
+
+interface HighlightStyle {
+  top: string;
+  left: string;
+  width: string;
+  height: string;
+}
+
+const DEFAULT_HIGHLIGHT: HighlightStyle = {
+  top: "0px",
+  left: "0px",
+  width: "0px",
+  height: "0px",
+};
 
 // Define button action mapping type
 interface ButtonActionMapping {
@@ -42,9 +58,11 @@ const DisplayScreen: React.FC = () => {
   const {
     balance,
     userName,
+    cardType,
     refreshAccountData,
     withdrawMoney,
     depositMoney,
+    resetAccountState,
     isLoading,
   } = useBankAccount("1"); // Pass account ID
 
@@ -232,12 +250,11 @@ const DisplayScreen: React.FC = () => {
         setCurrentScreen("balance");
         break;
       case "exit":
-        setCurrentScreen("initial");
         resetInputValues();
         setPin("");
+        resetAccountState();
         break;
       case "back":
-        setCurrentScreen("initial");
         resetInputValues();
         break;
       case "pin":
@@ -261,6 +278,7 @@ const DisplayScreen: React.FC = () => {
   const resetInputValues = (): void => {
     setWithdrawAmount("");
     setDepositAmount("");
+    setCurrentScreen("initial");
   };
 
   const handlePinSubmit = async (): Promise<void> => {
@@ -485,21 +503,35 @@ const DisplayScreen: React.FC = () => {
     );
   };
 
+  console.log("cardType", cardType);
+
   return (
-    <div className="flex flex-row">
-      <ButtonPanel
-        side="left"
-        actions={leftButtonActions[currentScreen] || leftButtonActions.initial}
-      />
-      <div className="bg-blue-400 text-white text-sm h-[200px] w-[200px] border-6 border-gray-200 ">
-        <MenuPanel />
+    <div className="flex flex-col justify-center items-center">
+      <div className="w-auto">
+        <HighlightedImage
+          cardSelected={cardType ?? ""}
+          imageSrc="/credit-cards.png"
+          highlight={cardImages.get(cardType as string) ?? DEFAULT_HIGHLIGHT}
+        />
       </div>
-      <ButtonPanel
-        side="right"
-        actions={
-          rightButtonActions[currentScreen] || rightButtonActions.initial
-        }
-      />
+
+      <div className="flex flex-row">
+        <ButtonPanel
+          side="left"
+          actions={
+            leftButtonActions[currentScreen] || leftButtonActions.initial
+          }
+        />
+        <div className="bg-blue-400 text-white text-sm h-[200px] w-[200px] border-6 border-gray-200 ">
+          <MenuPanel />
+        </div>
+        <ButtonPanel
+          side="right"
+          actions={
+            rightButtonActions[currentScreen] || rightButtonActions.initial
+          }
+        />
+      </div>
     </div>
   );
 };

@@ -1,6 +1,7 @@
 export interface BankAccountHook {
   balance: number;
   isLoading: boolean;
+  cardType: typeof CardType | string;
   error: string | null;
   userName: string;
   isAuthenticated: boolean;
@@ -14,18 +15,20 @@ export interface BankAccountHook {
     amount: number
   ) => Promise<ApiResponse<SuccessTransaction>>;
   refreshAccountData: (pin: string) => Promise<ApiResponse<AccountData>>;
+  resetAccountState: () => void;
 }
 
 export interface AccountInfo {
   balance: number;
   name: string;
+  cardType: typeof CardType | string;
   isAuthenticated: boolean;
   failedAttempts: number;
   isLoading: boolean;
   error: string | null;
 }
 
-const CardType = {
+export const CardType = {
   VISA: "visa",
   MASTERCARD: "mastercard",
   MAESTRO: "maestro",

@@ -19,6 +19,15 @@ const API_CONFIG = {
     "Content-Type": "application/json",
   },
 };
+const initialAccountState: AccountInfo = {
+  balance: 0,
+  name: "",
+  cardType: "",
+  isAuthenticated: false,
+  failedAttempts: 0,
+  isLoading: false,
+  error: null,
+};
 
 const useBankAccount = (accountId: string): BankAccountHook => {
   useEffect(() => {
@@ -27,14 +36,8 @@ const useBankAccount = (accountId: string): BankAccountHook => {
     }
   }, [accountId]);
 
-  const [accountInfo, setAccountInfo] = useState<AccountInfo>({
-    balance: 0,
-    name: "",
-    isAuthenticated: false,
-    failedAttempts: 0,
-    isLoading: false,
-    error: null,
-  });
+  const [accountInfo, setAccountInfo] =
+    useState<AccountInfo>(initialAccountState);
 
   const callApi = useCallback(
     async <T,>(
@@ -96,6 +99,7 @@ const useBankAccount = (accountId: string): BankAccountHook => {
         setAccountInfo({
           balance: result.data.balance,
           name: `${result.data.firstName} ${result.data.lastName}`,
+          cardType: result.data.cardType,
           isAuthenticated: true,
           failedAttempts: 0,
           isLoading: false,
@@ -157,9 +161,16 @@ const useBankAccount = (accountId: string): BankAccountHook => {
     ]
   );
 
+  const resetAccountState = () => {
+    setAccountInfo(() => ({
+      ...initialAccountState,
+    }));
+  };
+
   return {
     balance: accountInfo.balance,
     isLoading: accountInfo.isLoading,
+    cardType: accountInfo.cardType,
     error: accountInfo.error,
     userName: accountInfo.name,
     isAuthenticated: accountInfo.isAuthenticated,
@@ -167,6 +178,7 @@ const useBankAccount = (accountId: string): BankAccountHook => {
     withdrawMoney: (pin, amount) => executeTransaction("withdraw", pin, amount),
     depositMoney: (pin, amount) => executeTransaction("deposit", pin, amount),
     refreshAccountData,
+    resetAccountState,
   };
 };
 
