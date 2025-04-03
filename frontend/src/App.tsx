@@ -4,7 +4,7 @@ import ATM from "./containers/ATM";
 
 function App() {
   return (
-    <div className="h-full w-full bg-[#9577a8]">
+    <div className="h-full w-full bg-[#9577a8] flex justify-center overflow-scroll">
       <ATM />
     </div>
   );
