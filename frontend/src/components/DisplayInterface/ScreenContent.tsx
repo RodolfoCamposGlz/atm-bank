@@ -30,7 +30,9 @@ export const ScreenContent: React.FC<ScreenContentProps> = ({
 }) => {
   if (isLoading) {
     return (
-      <div className="flex justify-center items-center h-full">Loading...</div>
+      <div className="flex justify-center items-center h-full text-lg">
+        Loading...
+      </div>
     );
   }
 
@@ -68,7 +70,7 @@ export const ScreenContent: React.FC<ScreenContentProps> = ({
       );
     case "deposit":
       return (
-        <div className="flex flex-col items-center justify-center h-full">
+        <div className="flex flex-col items-center justify-center h-full text-lg">
           <p className="mb-4">Enter amount to deposit</p>
           <NumericFormat
             value={depositAmount}
