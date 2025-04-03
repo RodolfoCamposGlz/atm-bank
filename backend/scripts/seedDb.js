@@ -9,7 +9,6 @@ async function seed() {
 
   //insert data
   await Promise.all([
-    // Add BankAccount seed data
     BankAccount.create({
       id: 1,
       firstName: "Harry",
@@ -17,6 +16,9 @@ async function seed() {
       balance: 1150.0,
       accountStatus: "open",
       pinNumber: "1234", // In production, this should be hashed
+      cardType: "visa",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }),
     BankAccount.create({
       id: 2,
@@ -25,6 +27,9 @@ async function seed() {
       balance: 231.11,
       accountStatus: "open",
       pinNumber: "4321",
+      cardType: "mastercard",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }),
     BankAccount.create({
       id: 3,
@@ -33,6 +38,9 @@ async function seed() {
       balance: 451.3,
       accountStatus: "open",
       pinNumber: "0000",
+      cardType: "maestro",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }),
     BankAccount.create({
       id: 4,
@@ -41,6 +49,9 @@ async function seed() {
       balance: 1.3,
       accountStatus: "open",
       pinNumber: "1111",
+      cardType: "plus",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }),
     BankAccount.create({
       id: 5,
@@ -49,6 +60,9 @@ async function seed() {
       balance: 1000000.0,
       accountStatus: "open",
       pinNumber: "9999",
+      cardType: "discover",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }),
     BankAccount.create({
       id: 6,
@@ -57,6 +71,9 @@ async function seed() {
       balance: 5000000.0,
       accountStatus: "open",
       pinNumber: "8888",
+      cardType: "visa",
+      createdAt: new Date(),
+      updatedAt: new Date(),
     }),
   ]);
 }

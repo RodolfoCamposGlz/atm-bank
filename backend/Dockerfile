@@ -1,28 +1,29 @@
-FROM node:20-alpine3.18
+FROM node:20-bullseye
 
-RUN addgroup app && adduser -S -G app app
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    python3 \
+    make \
+    g++ \
+    sqlite3 \
+    && rm -rf /var/lib/apt/lists/*
 
+# Create non-root user
+RUN useradd -m app
+WORKDIR /backend
+RUN chown app:app /backend
+
+# Copy package files first for better caching
+COPY --chown=app:app package*.json ./
+
+# Install ALL dependencies (including devDependencies for seeding)
 USER app
+RUN npm install --include=dev
 
-WORKDIR /app
+# Copy application code
+COPY --chown=app:app . .
 
-COPY package*.json ./
+EXPOSE 8000
 
-# change ownership of the /app directory to the app user
-USER root
-
-# change ownership of the /app directory to the app user
-# chown -R <user>:<group> <directory>
-# chown command changes the user and/or group ownership of for given file.
-RUN chown -R app:app .
-
-# change the user back to the app user
-USER app
-
-RUN npm install
-
-COPY . . 
-
-EXPOSE 8000 
-
-CMD npm run seed && npm start
+CMD ["sh", "-c", "npm install && npm run seed && npm start"]

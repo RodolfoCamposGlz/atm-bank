@@ -31,9 +31,9 @@ const getAccountByPin = async (req, res) => {
   } catch (err) {
     // 5. Handle unexpected errors
     console.error("Account fetch error:", err);
-    return res.status(500).json({
+    return res.status(404).json({
       status: "error",
-      message: "Internal server error while fetching account",
+      message: "Invalid PIN",
     });
   }
 };

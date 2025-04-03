@@ -40,7 +40,7 @@ const accountService = {
           account.balance -= amount;
           account.updatedAt = new Date();
           await account.save({ transaction: t });
-          return { message: "Payment successful" };
+          return { message: "Withdraw successful" };
         });
       } catch (error) {
         // Check if it's a database lock error

@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 import Button from "./Button";
-import CurrencyInput from "react-currency-input-field";
+import { NumericFormat } from "react-number-format";
 import useBankAccount from "../hooks/useBankData";
-
 // Define screen types to avoid string literals
 type ScreenType =
   | "initial"
@@ -43,15 +42,12 @@ const DisplayScreen: React.FC = () => {
   const {
     balance,
     userName,
-    isAuthenticated,
-    verifyPin,
+    refreshAccountData,
     withdrawMoney,
     depositMoney,
     isLoading,
-    error,
-  } = useBankAccount("user123"); // Pass account ID
+  } = useBankAccount("1"); // Pass account ID
 
-  // Button actions mapping - moved outside of render functions
   const leftButtonActions: ButtonActionMapping = {
     initial: [null, null, null, null],
     options: [null, null, "withdraw", "deposit"],
@@ -64,7 +60,7 @@ const DisplayScreen: React.FC = () => {
 
   const rightButtonActions: ButtonActionMapping = {
     initial: [null, null, null, "pin"],
-    options: [null, "exit", "balance", "initial"],
+    options: [null, "exit", "balance", "exit"],
     withdraw: ["submit-withdraw", "options", null, null],
     deposit: ["submit-deposit", "options", null, null],
     balance: [null, "options", null, null],
@@ -114,7 +110,7 @@ const DisplayScreen: React.FC = () => {
         row: 4,
         col: 2,
         content: "Re-enter PIN",
-        action: "pin",
+        action: "exit",
         justifyContent: "justify-self-end",
       },
     ],
@@ -226,9 +222,11 @@ const DisplayScreen: React.FC = () => {
         break;
       case "withdraw":
         setCurrentScreen("withdraw");
+        setWithdrawAmount("");
         break;
       case "deposit":
         setCurrentScreen("deposit");
+        setDepositAmount("");
         break;
       case "balance":
         setCurrentScreen("balance");
@@ -236,6 +234,7 @@ const DisplayScreen: React.FC = () => {
       case "exit":
         setCurrentScreen("initial");
         resetInputValues();
+        setPin("");
         break;
       case "back":
         setCurrentScreen("initial");
@@ -264,30 +263,18 @@ const DisplayScreen: React.FC = () => {
     setDepositAmount("");
   };
 
-  const handlePinSubmit = (): void => {
-    if (verifyPin(pin)) {
+  const handlePinSubmit = async (): Promise<void> => {
+    const res = await refreshAccountData(pin);
+    if (res.success) {
       setCurrentScreen("options");
-      setPin("");
     } else {
-      alert("Invalid PIN");
+      alert(res.error);
     }
   };
 
   const handlePinChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
     const value = e.target.value.replace(/\D/g, "").slice(0, 4);
     setPin(value);
-  };
-
-  const handleWithdrawAmountChange = (value: string | undefined): void => {
-    if (value !== undefined) {
-      setWithdrawAmount(value);
-    }
-  };
-
-  const handleDepositAmountChange = (value: string | undefined): void => {
-    if (value !== undefined) {
-      setDepositAmount(value);
-    }
   };
 
   const parseAmount = (amountStr: string): number => {
@@ -301,12 +288,13 @@ const DisplayScreen: React.FC = () => {
       return;
     }
 
-    const result = await withdrawMoney(amount);
+    const result = await withdrawMoney(pin, amount);
     if (result.success) {
       setWithdrawAmount("");
       setCurrentScreen("options");
-    } else {
       alert(result.message);
+    } else {
+      alert(result.error);
     }
   };
 
@@ -317,22 +305,23 @@ const DisplayScreen: React.FC = () => {
       return;
     }
 
-    const result = await depositMoney(amount);
+    const result = await depositMoney(pin, amount);
     if (result.success) {
       setDepositAmount("");
       setCurrentScreen("options");
-    } else {
       alert(result.message);
+    } else {
+      alert(result.error);
     }
   };
 
   // UI rendering components
-  const LoadingState = (): JSX.Element => <div>Loading...</div>;
-  const ErrorState = (): JSX.Element => <div>Error: {error}</div>;
+  const LoadingState = (): JSX.Element => (
+    <div className="flex justify-center items-center h-full">Loading...</div>
+  );
 
   const ScreenContent = (): JSX.Element => {
     if (isLoading) return <LoadingState />;
-    if (error) return <ErrorState />;
 
     switch (currentScreen) {
       case "initial":
@@ -342,17 +331,27 @@ const DisplayScreen: React.FC = () => {
             <p>Welcome to the ATM</p>
           </div>
         );
+      case "options":
+        return (
+          <div className="flex flex-col items-center mt-[10px]">
+            <p>Hi {userName}!</p>
+            <p>Please make a choice</p>
+          </div>
+        );
       case "withdraw":
         return (
           <div className="flex flex-col items-center justify-center h-full">
             <p className="mb-4">Enter amount to withdraw</p>
-            <CurrencyInput
+            <NumericFormat
               value={withdrawAmount}
-              onValueChange={handleWithdrawAmountChange}
               className="w-32 p-2 text-center text-white rounded border border-gray-300"
+              onValueChange={({ value }) => setWithdrawAmount(value)}
               prefix="$"
+              placeholder="0.0"
               decimalScale={2}
+              allowNegative={false}
               autoFocus
+              thousandSeparator
             />
           </div>
         );
@@ -360,13 +359,16 @@ const DisplayScreen: React.FC = () => {
         return (
           <div className="flex flex-col items-center justify-center h-full">
             <p className="mb-4">Enter amount to deposit</p>
-            <CurrencyInput
+            <NumericFormat
               value={depositAmount}
-              onValueChange={handleDepositAmountChange}
               className="w-32 p-2 text-center text-white rounded border border-gray-300"
+              onValueChange={({ value }) => setDepositAmount(value)}
               prefix="$"
+              placeholder="0.0"
               decimalScale={2}
+              allowNegative={false}
               autoFocus
+              thousandSeparator
             />
           </div>
         );
@@ -374,13 +376,14 @@ const DisplayScreen: React.FC = () => {
         return (
           <div className="flex flex-col items-center justify-center h-full">
             <p className="mb-4">Your balance is</p>
-            <CurrencyInput
+            <NumericFormat
               value={balance}
-              className="w-32 p-2 text-center text-black rounded border border-gray-300"
+              className="w-32 p-2 text-center text-white rounded border border-gray-300"
               prefix="$"
               decimalScale={2}
+              autoFocus
               disabled
-              readOnly
+              thousandSeparator
             />
           </div>
         );
@@ -401,10 +404,13 @@ const DisplayScreen: React.FC = () => {
             </div>
           </div>
         );
-      case "goodbye":
-        return <p>Thank you for using our ATM</p>;
       default:
-        return <p>Please make a selection</p>;
+        return (
+          <div className="flex flex-col items-center mt-[10px]">
+            <p>Hi {userName}!</p>
+            <p>Please make a choice</p>
+          </div>
+        );
     }
   };
 
@@ -416,15 +422,19 @@ const DisplayScreen: React.FC = () => {
     actions: (string | null)[];
   }): JSX.Element => {
     return (
-      <div className="flex flex-col h-full justify-end mt-auto gap-y-1 mb-3">
-        {actions.map((action, index) => (
+      <div className="flex h-[92px] flex-col h-full justify-end mt-auto gap-y-2 mb-[9px]">
+        {actions.map((action) => (
           <Button
-            key={`${side}-${index}`}
+            side={side}
             onClick={() => action && handleButtonClick(action)}
           />
         ))}
       </div>
     );
+  };
+
+  const getOptionSide = (option: MenuOption): "left" | "right" => {
+    return option.col === 1 ? "left" : "right";
   };
 
   const MenuPanel = (): JSX.Element => {
@@ -435,26 +445,41 @@ const DisplayScreen: React.FC = () => {
         <div className="h-[50%]">
           <ScreenContent />
         </div>
-        <div className="grid grid-cols-2 grid-rows-4 text-xs gap-y-3 h-[50%]">
-          {currentOptions.map((option, index) => (
-            <div
-              key={index}
-              className={`row-start-${option.row} col-start-${option.col} ${
-                option.justifyContent || ""
-              }`}
-            >
-              {option.content && (
-                <button
-                  onClick={() =>
-                    option.action && handleButtonClick(option.action)
-                  }
-                  className="hover:underline focus:outline-none text-[8px]"
-                >
-                  {option.content}
-                </button>
-              )}
-            </div>
-          ))}
+        <div className="grid grid-cols-2 grid-rows-4 text-xs h-[50%]">
+          {currentOptions.map((option, index) => {
+            const side = getOptionSide(option);
+            return (
+              <div
+                key={index}
+                className={`row-start-${option.row} col-start-${
+                  option.col
+                } w-full ${option.justifyContent || ""}`}
+              >
+                {option.content && (
+                  <div
+                    className={`flex items-center h-full  ${
+                      side === "right" ? "justify-end" : ""
+                    }`}
+                  >
+                    {side === "left" && (
+                      <div className="h-[2px] w-[10px] bg-white mr-1"></div>
+                    )}
+                    <button
+                      onClick={() =>
+                        option.action && handleButtonClick(option.action)
+                      }
+                      className="hover:underline cursor-pointer focus:outline-none text-[8px]"
+                    >
+                      {option.content}
+                    </button>
+                    {side === "right" && (
+                      <div className="h-[2px] w-[10px]  bg-white ml-1"></div>
+                    )}
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
       </div>
     );
@@ -466,7 +491,7 @@ const DisplayScreen: React.FC = () => {
         side="left"
         actions={leftButtonActions[currentScreen] || leftButtonActions.initial}
       />
-      <div className="bg-blue-400 text-white text-sm h-[200px] w-[200px] border-6 border-gray-200 pb-3">
+      <div className="bg-blue-400 text-white text-sm h-[200px] w-[200px] border-6 border-gray-200 ">
         <MenuPanel />
       </div>
       <ButtonPanel

@@ -40,6 +40,18 @@ BankAccount.init(
       type: Sequelize.ENUM("open", "closed"),
       defaultValue: "open",
     },
+    cardType: {
+      type: Sequelize.ENUM(
+        "visa",
+        "mastercard",
+        "star",
+        "pulse",
+        "maestro",
+        "plus"
+      ),
+      allowNull: false,
+      defaultValue: "Visa", // Default to Visa
+    },
     pinNumber: {
       type: Sequelize.STRING(4),
       allowNull: false,

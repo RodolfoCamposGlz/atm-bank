@@ -42,9 +42,9 @@ services:
     ports:
       - 8000:8000
     environment:
-      DB_URL: "sqlite:///backend/sqlite.db"
+      DB_URL: "sqlite:///backend/data/database.sqlite"
     volumes:
-      - ./backend/data:/app/data # Mounts a persistent volume inside the container
+      - ./backend:/backend
     develop:
       watch:
         - path: ./backend
